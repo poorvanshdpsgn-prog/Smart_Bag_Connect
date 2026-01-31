@@ -19,7 +19,7 @@ export async function registerRoutes(
   app.post(api.timetables.update.path, async (req, res) => {
     try {
       const input = api.timetables.update.input.parse(req.body);
-      const updated = await storage.updateTimetable(input.day, input.subjects);
+      const updated = await storage.updateTimetable(input.day, input.subject1, input.subject2);
       res.json(updated);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -74,7 +74,7 @@ async function seedDatabase() {
   if (existing.length === 0) {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     for (const day of days) {
-      await storage.updateTimetable(day, ["Free", "Free", "Free", "Free", "Free"]);
+      await storage.updateTimetable(day, "Free", "Free");
     }
   }
 }

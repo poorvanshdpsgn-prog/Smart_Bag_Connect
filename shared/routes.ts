@@ -29,7 +29,8 @@ export const api = {
       path: '/api/timetables',
       input: z.object({
         day: z.string(),
-        subjects: z.array(z.string())
+        subject1: z.string(),
+        subject2: z.string()
       }),
       responses: {
         200: z.custom<typeof timetables.$inferSelect>(),

@@ -9,7 +9,8 @@ import { z } from "zod";
 export const timetables = pgTable("timetables", {
   id: serial("id").primaryKey(),
   day: text("day").notNull().unique(), // Monday, Tuesday, etc.
-  subjects: jsonb("subjects").notNull().$type<string[]>(), // Array of subjects
+  subject1: text("subject1").default(""),
+  subject2: text("subject2").default(""),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
@@ -35,7 +36,8 @@ export type InsertAlert = z.infer<typeof insertAlertSchema>;
 // Request types
 export type UpdateTimetableRequest = {
   day: string;
-  subjects: string[];
+  subject1: string;
+  subject2: string;
 };
 
 export type CreateAlertRequest = {

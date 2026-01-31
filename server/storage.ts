@@ -13,7 +13,7 @@ import { eq, desc } from "drizzle-orm";
 export interface IStorage {
   // Timetables
   getTimetables(): Promise<Timetable[]>;
-  updateTimetable(day: string, subjects: string[]): Promise<Timetable>;
+  updateTimetable(day: string, subject1: string, subject2: string): Promise<Timetable>;
 
   // Alerts
   getAlerts(): Promise<Alert[]>;
@@ -26,20 +26,20 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(timetables);
   }
 
-  async updateTimetable(day: string, subjects: string[]): Promise<Timetable> {
+  async updateTimetable(day: string, subject1: string, subject2: string): Promise<Timetable> {
     const existing = await db.select().from(timetables).where(eq(timetables.day, day));
 
     if (existing.length > 0) {
       const [updated] = await db
         .update(timetables)
-        .set({ subjects, updatedAt: new Date() })
+        .set({ subject1, subject2, updatedAt: new Date() })
         .where(eq(timetables.day, day))
         .returning();
       return updated;
     } else {
       const [created] = await db
         .insert(timetables)
-        .values({ day, subjects })
+        .values({ day, subject1, subject2 })
         .returning();
       return created;
     }
