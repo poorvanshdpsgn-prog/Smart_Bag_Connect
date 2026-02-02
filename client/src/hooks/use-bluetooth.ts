@@ -223,6 +223,7 @@ export function useBluetooth() {
     connect,
     disconnect,
     sendData,
+    triggerAlarm, // Added for testing
     isAlerting,
     alertType,
     stopAlarm

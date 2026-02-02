@@ -17,6 +17,11 @@ export default function Dashboard({ bluetooth }: DashboardProps) {
     <div className="space-y-6 pt-2 pb-20">
       {/* Hero Status Card */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card to-card/50 border border-border/50 p-6 shadow-xl">
+        <div className="flex gap-2 mb-4 opacity-20 hover:opacity-100 transition-opacity absolute top-0 left-0 p-2 z-20">
+          <button onClick={() => bluetooth.triggerAlarm?.("intrusion")} className="px-2 py-1 text-[10px] border rounded">T:I</button>
+          <button onClick={() => bluetooth.triggerAlarm?.("water")} className="px-2 py-1 text-[10px] border rounded">T:W</button>
+          <button onClick={() => bluetooth.triggerAlarm?.("override")} className="px-2 py-1 text-[10px] border rounded">T:O</button>
+        </div>
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <Activity className="w-32 h-32" />
         </div>

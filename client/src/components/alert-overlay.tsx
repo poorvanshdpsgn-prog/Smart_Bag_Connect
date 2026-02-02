@@ -24,7 +24,8 @@ const alertContent = {
 };
 
 export function AlertOverlay({ isOpen, type, onDismiss }: AlertOverlayProps) {
-  const content = type ? alertContent[type] : alertContent.intrusion;
+  // Use "intrusion" as a safe fallback if type is null
+  const content = (type && alertContent[type]) ? alertContent[type] : alertContent.intrusion;
 
   useEffect(() => {
     if (isOpen) {
