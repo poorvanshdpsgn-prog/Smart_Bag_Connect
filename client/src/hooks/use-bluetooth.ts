@@ -43,6 +43,7 @@ export function useBluetooth() {
   const [device, setDevice] = useState<BluetoothDevice | null>(null);
   const [characteristic, setCharacteristic] = useState<BluetoothRemoteGATTCharacteristic | null>(null);
   const [isAlerting, setIsAlerting] = useState(false);
+  const [alertType, setAlertType] = useState<"intrusion" | "water" | "override" | null>(null);
   const { toast } = useToast();
   const createAlert = useCreateAlert();
 
@@ -63,8 +64,9 @@ export function useBluetooth() {
     }
   }, []);
 
-  const triggerAlarm = useCallback(() => {
+  const triggerAlarm = useCallback((type: "intrusion" | "water" | "override" = "intrusion") => {
     setIsAlerting(true);
+    setAlertType(type);
     
     // 1. Vibration
     if (navigator.vibrate) {
@@ -100,7 +102,13 @@ export function useBluetooth() {
     }
 
     // 3. Log to DB
-    createAlert.mutate({ message: "Intrusion Detected via Bluetooth" });
+    const message = type === "intrusion" 
+      ? "Intrusion Detected via Bluetooth" 
+      : type === "water" 
+        ? "Water Damage Detected" 
+        : "System Override Misuse Detected";
+        
+    createAlert.mutate({ message });
   }, [createAlert]);
 
   const handleCharacteristicValueChanged = useCallback((event: Event) => {
@@ -108,12 +116,16 @@ export function useBluetooth() {
     if (!value) return;
 
     const decoder = new TextDecoder("utf-8");
-    const message = decoder.decode(value).trim();
+    const message = decoder.decode(value).trim().toUpperCase();
     console.log("[BLE] Received:", message);
 
     // Check for specific alert keyword from Arduino
-    if (message.includes("ALERT") || message.includes("INTRUSION")) {
-      triggerAlarm();
+    if (message.includes("INTRUSION") || message.includes("ALERT")) {
+      triggerAlarm("intrusion");
+    } else if (message.includes("WATER")) {
+      triggerAlarm("water");
+    } else if (message.includes("OVERRIDE")) {
+      triggerAlarm("override");
     }
   }, [triggerAlarm]);
 
@@ -212,6 +224,7 @@ export function useBluetooth() {
     disconnect,
     sendData,
     isAlerting,
+    alertType,
     stopAlarm
   };
 }

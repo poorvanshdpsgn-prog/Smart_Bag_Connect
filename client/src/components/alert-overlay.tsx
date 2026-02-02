@@ -4,10 +4,28 @@ import { ShieldAlert, BellOff } from "lucide-react";
 
 interface AlertOverlayProps {
   isOpen: boolean;
+  type: "intrusion" | "water" | "override" | null;
   onDismiss: () => void;
 }
 
-export function AlertOverlay({ isOpen, onDismiss }: AlertOverlayProps) {
+const alertContent = {
+  intrusion: {
+    title: "INTRUSION",
+    description: "Unauthorized access detected on Smart Bag.",
+  },
+  water: {
+    title: "WATER DETECTION",
+    description: "Moisture detected inside the bag! Check your belongings.",
+  },
+  override: {
+    title: "SYSTEM OVERRIDE",
+    description: "Unusual system override pattern detected. Check bag controls.",
+  }
+};
+
+export function AlertOverlay({ isOpen, type, onDismiss }: AlertOverlayProps) {
+  const content = type ? alertContent[type] : alertContent.intrusion;
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -41,10 +59,10 @@ export function AlertOverlay({ isOpen, onDismiss }: AlertOverlayProps) {
               </motion.div>
               
               <h2 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter animate-glitch">
-                INTRUSION
+                {content.title}
               </h2>
               <p className="text-white/80 font-medium mb-8 text-lg">
-                Unauthorized access detected on Smart Bag.
+                {content.description}
               </p>
 
               <button

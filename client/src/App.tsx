@@ -19,7 +19,11 @@ function Router() {
 
   return (
     <>
-      <AlertOverlay isOpen={bluetooth.isAlerting} onDismiss={bluetooth.stopAlarm} />
+      <AlertOverlay 
+        isOpen={bluetooth.isAlerting} 
+        type={bluetooth.alertType}
+        onDismiss={bluetooth.stopAlarm} 
+      />
       
       <NavHeader 
         status={bluetooth.status} 
