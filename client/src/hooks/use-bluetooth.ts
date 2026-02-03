@@ -155,12 +155,9 @@ export function useBluetooth() {
       const service = await server.getPrimaryService(SERVICE_UUID);
       const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
 
-      // Store device reference immediately to prevent GC issues or early disconnection logic triggers
-      setDevice(device);
-      
       await characteristic.startNotifications();
       characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
-      
+
       setCharacteristic(characteristic);
       setStatus("connected");
       toast({ title: "Connected", description: "Smart Bag linked successfully." });
