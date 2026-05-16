@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useTimetables, useUpdateTimetable } from "@/hooks/use-timetables";
 import { useBluetooth } from "@/hooks/use-bluetooth";
-import { SubjectList } from "@/components/subject-list";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Send, Save, Loader2 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Send, Save, Loader2, Clock, CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface TimetablePageProps {
@@ -20,27 +19,22 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
   const { toast } = useToast();
 
   const currentTimetable = timetables?.find(t => t.day === activeDay);
-  const [subject1, setSubject1] = useState("");
-  const [subject2, setSubject2] = useState("");
+  const [meeting, setMeeting] = useState("");
+  const [meetingTime, setMeetingTime] = useState("");
 
-  // Sync local state when activeDay or data changes
   useState(() => {
     if (currentTimetable) {
-      setSubject1(currentTimetable.subject1 || "");
-      setSubject2(currentTimetable.subject2 || "");
+      setMeeting(currentTimetable.meeting || "");
+      setMeetingTime(currentTimetable.meetingTime || "");
     }
   });
 
   const handleSave = async () => {
     try {
-      await updateTimetable.mutateAsync({ 
-        day: activeDay, 
-        subject1, 
-        subject2 
-      });
-      toast({ title: "Success", description: "Meetings saved locally." });
-    } catch (e) {
-      toast({ title: "Error", description: "Failed to save meetings.", variant: "destructive" });
+      await updateTimetable.mutateAsync({ day: activeDay, meeting, meetingTime });
+      toast({ title: "Saved", description: "Meeting saved." });
+    } catch {
+      toast({ title: "Error", description: "Failed to save meeting.", variant: "destructive" });
     }
   };
 
@@ -49,9 +43,7 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
       toast({ title: "Not Connected", description: "Connect to bag to sync.", variant: "destructive" });
       return;
     }
-    
-    // Format: "Day| Subject1| Subject2"
-    const payload = `${activeDay}| ${subject1}| ${subject2}`;
+    const payload = `${activeDay}|${meeting}|${meetingTime}`;
     await bluetooth.sendData(payload);
     toast({ title: "Synced", description: "Sent to bag." });
   };
@@ -63,7 +55,7 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
           <h2 className="text-2xl font-bold">Meetings</h2>
           <p className="text-muted-foreground text-sm">Manage daily meetings</p>
         </div>
-        <Button 
+        <Button
           onClick={handleSync}
           disabled={bluetooth.status !== "connected"}
           className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
@@ -76,11 +68,11 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
       <Tabs defaultValue={DAYS[0]} value={activeDay} onValueChange={(v) => {
         setActiveDay(v);
         const t = timetables?.find(item => item.day === v);
-        setSubject1(t?.subject1 || "");
-        setSubject2(t?.subject2 || "");
+        setMeeting(t?.meeting || "");
+        setMeetingTime(t?.meetingTime || "");
       }} className="w-full flex-1 flex flex-col">
         <ScrollableTabsList days={DAYS} />
-        
+
         <div className="mt-6 flex-1 bg-card/30 border border-border/50 rounded-3xl p-6 backdrop-blur-sm relative overflow-hidden">
           {isLoading ? (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -88,32 +80,47 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
             </div>
           ) : (
             <div className="space-y-6">
+
+              {/* Meeting name */}
               <div className="space-y-2">
-                <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Meeting 1</label>
-                <input 
-                  value={subject1} 
-                  onChange={(e) => setSubject1(e.target.value)}
+                <label className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                  <CalendarDays className="w-3.5 h-3.5" />
+                  Meeting
+                </label>
+                <input
+                  value={meeting}
+                  onChange={(e) => setMeeting(e.target.value)}
                   placeholder="e.g. Team Standup"
+                  data-testid="input-meeting"
                   className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 />
               </div>
+
+              {/* Time */}
               <div className="space-y-2">
-                <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Meeting 2</label>
-                <input 
-                  value={subject2} 
-                  onChange={(e) => setSubject2(e.target.value)}
-                  placeholder="e.g. Client Review"
-                  className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                <label className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                  <Clock className="w-3.5 h-3.5" />
+                  Time
+                </label>
+                <input
+                  type="time"
+                  value={meetingTime}
+                  onChange={(e) => setMeetingTime(e.target.value)}
+                  data-testid="input-meeting-time"
+                  className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-mono"
                 />
               </div>
-              
-              <Button 
-                onClick={handleSave} 
-                className="w-full h-12 rounded-xl mt-4" 
+
+              <Button
+                onClick={handleSave}
+                className="w-full h-12 rounded-xl mt-4"
                 variant="secondary"
                 disabled={updateTimetable.isPending}
+                data-testid="button-save-meeting"
               >
-                {updateTimetable.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                {updateTimetable.isPending
+                  ? <Loader2 className="w-4 h-4 animate-spin" />
+                  : <Save className="w-4 h-4 mr-2" />}
                 Save Changes
               </Button>
             </div>

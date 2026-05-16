@@ -5,12 +5,12 @@ import { z } from "zod";
 
 // === TABLE DEFINITIONS ===
 
-// Store timetable for each day
+// Store meeting for each day
 export const timetables = pgTable("timetables", {
   id: serial("id").primaryKey(),
   day: text("day").notNull().unique(), // Monday, Tuesday, etc.
-  subject1: text("subject1").default(""),
-  subject2: text("subject2").default(""),
+  meeting: text("meeting").default(""),
+  meetingTime: text("meeting_time").default(""),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
@@ -36,8 +36,8 @@ export type InsertAlert = z.infer<typeof insertAlertSchema>;
 // Request types
 export type UpdateTimetableRequest = {
   day: string;
-  subject1: string;
-  subject2: string;
+  meeting: string;
+  meetingTime: string;
 };
 
 export type CreateAlertRequest = {

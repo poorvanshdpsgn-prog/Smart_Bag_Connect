@@ -15,7 +15,7 @@ export function useTimetables() {
 export function useUpdateTimetable() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: UpdateTimetableRequest) => {
+    mutationFn: async (data: UpdateTimetableRequest) => { // { day, meeting, meetingTime }
       const res = await fetch(api.timetables.update.path, {
         method: api.timetables.update.method,
         headers: { "Content-Type": "application/json" },
