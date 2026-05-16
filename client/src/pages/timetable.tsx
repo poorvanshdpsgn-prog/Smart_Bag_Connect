@@ -38,9 +38,9 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
         subject1, 
         subject2 
       });
-      toast({ title: "Success", description: "Schedule saved locally." });
+      toast({ title: "Success", description: "Meetings saved locally." });
     } catch (e) {
-      toast({ title: "Error", description: "Failed to save schedule.", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to save meetings.", variant: "destructive" });
     }
   };
 
@@ -60,8 +60,8 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
     <div className="pt-2 pb-24 h-full flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold">Timetable</h2>
-          <p className="text-muted-foreground text-sm">Manage daily schedules</p>
+          <h2 className="text-2xl font-bold">Meetings</h2>
+          <p className="text-muted-foreground text-sm">Manage daily meetings</p>
         </div>
         <Button 
           onClick={handleSync}
@@ -89,20 +89,20 @@ export default function TimetablePage({ bluetooth }: TimetablePageProps) {
           ) : (
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Subject 1</label>
+                <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Meeting 1</label>
                 <input 
                   value={subject1} 
                   onChange={(e) => setSubject1(e.target.value)}
-                  placeholder="e.g. Mathematics"
+                  placeholder="e.g. Team Standup"
                   className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Subject 2</label>
+                <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Meeting 2</label>
                 <input 
                   value={subject2} 
                   onChange={(e) => setSubject2(e.target.value)}
-                  placeholder="e.g. Physics"
+                  placeholder="e.g. Client Review"
                   className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 />
               </div>

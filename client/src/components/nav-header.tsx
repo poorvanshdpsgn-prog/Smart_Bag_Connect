@@ -56,7 +56,7 @@ export function BottomNav() {
   
   const links = [
     { href: "/", icon: LayoutDashboard, label: "Dash" },
-    { href: "/timetable", icon: Calendar, label: "Schedule" },
+    { href: "/timetable", icon: Calendar, label: "Meetings" },
     { href: "/alerts", icon: Bell, label: "Alerts" },
     { href: "/settings", icon: Settings, label: "System" },
   ];

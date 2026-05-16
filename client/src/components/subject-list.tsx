@@ -51,14 +51,14 @@ export function SubjectList({ subjects, onChange, isLoading }: SubjectListProps)
         
         {subjects.length === 0 && (
           <div className="text-center py-8 text-muted-foreground italic border border-dashed border-border rounded-xl">
-            No subjects scheduled for this day
+            No meetings scheduled for this day
           </div>
         )}
       </div>
 
       <div className="flex gap-2">
         <Input
-          placeholder="Add subject (e.g. Mathematics)"
+          placeholder="Add meeting (e.g. Team Standup)"
           value={newSubject}
           onChange={(e) => setNewSubject(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
