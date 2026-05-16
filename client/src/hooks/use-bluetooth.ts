@@ -42,7 +42,7 @@ const isNative = Capacitor.isNativePlatform();
 export function useBluetooth() {
   const [status, setStatus] = useState<BluetoothStatus>("disconnected");
   const [isAlerting, setIsAlerting] = useState(false);
-  const [alertType, setAlertType] = useState<"intrusion" | "water" | "override" | null>(null);
+  const [alertType, setAlertType] = useState<"intrusion" | "water" | "override" | "surveillance" | null>(null);
   const { toast } = useToast();
   const createAlert = useCreateAlert();
 
@@ -72,7 +72,7 @@ export function useBluetooth() {
     }
   }, []);
 
-  const triggerAlarm = useCallback((type: "intrusion" | "water" | "override" = "intrusion") => {
+  const triggerAlarm = useCallback((type: "intrusion" | "water" | "override" | "surveillance" = "intrusion") => {
     setIsAlerting(true);
     setAlertType(type);
 
@@ -102,6 +102,8 @@ export function useBluetooth() {
         ? "Intrusion Detected via Bluetooth"
         : type === "water"
         ? "Water Damage Detected"
+        : type === "surveillance"
+        ? "Motion Detected by Surveillance Sensor"
         : "System Override Misuse Detected";
     createAlert.mutate({ message });
   }, [createAlert]);
@@ -117,6 +119,8 @@ export function useBluetooth() {
       triggerAlarm("water");
     } else if (message.includes("OVERRIDE")) {
       triggerAlarm("override");
+    } else if (message.includes("SURVEILLANCE") || message.includes("MOTION") || message.includes("PROXIMITY")) {
+      triggerAlarm("surveillance");
     }
   }, [triggerAlarm]);
 

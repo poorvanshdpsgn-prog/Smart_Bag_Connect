@@ -21,6 +21,7 @@ export default function Dashboard({ bluetooth }: DashboardProps) {
           <button onClick={() => bluetooth.triggerAlarm?.("intrusion")} className="px-2 py-1 text-[10px] border rounded">T:I</button>
           <button onClick={() => bluetooth.triggerAlarm?.("water")} className="px-2 py-1 text-[10px] border rounded">T:W</button>
           <button onClick={() => bluetooth.triggerAlarm?.("override")} className="px-2 py-1 text-[10px] border rounded">T:O</button>
+          <button onClick={() => bluetooth.triggerAlarm?.("surveillance")} className="px-2 py-1 text-[10px] border rounded">T:S</button>
         </div>
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <Activity className="w-32 h-32" />
