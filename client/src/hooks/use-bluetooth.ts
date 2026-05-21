@@ -4,9 +4,10 @@ import { useCreateAlert } from "./use-alerts";
 import { Capacitor } from "@capacitor/core";
 import { BleClient, textToDataView, dataViewToText } from "@capacitor-community/bluetooth-le";
 
-// HM-10 Standard UUIDs
-const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
-const CHARACTERISTIC_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
+// Arduino UNO R4 WiFi built-in BLE UUIDs
+const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
+const CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
+const DEVICE_NAME = "SmartBag-Security";
 
 type BluetoothStatus = "disconnected" | "connecting" | "connected" | "error";
 
@@ -132,6 +133,7 @@ export function useBluetooth() {
       await BleClient.initialize();
 
       const device = await BleClient.requestDevice({
+        name: DEVICE_NAME,
         services: [SERVICE_UUID],
       });
 
@@ -221,7 +223,7 @@ export function useBluetooth() {
     try {
       setStatus("connecting");
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: [SERVICE_UUID] }],
+        filters: [{ name: DEVICE_NAME }, { services: [SERVICE_UUID] }],
       });
       webDevice.current = device;
       device.addEventListener("gattserverdisconnected", onWebDisconnected);
