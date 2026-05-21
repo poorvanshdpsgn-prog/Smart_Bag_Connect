@@ -36,8 +36,9 @@ export default function SettingsPage({ bluetooth }: SettingsPageProps) {
               </Button>
             )}
           </div>
-          <div className="text-xs text-muted-foreground bg-background/50 p-3 rounded-xl font-mono">
-            UUID: 0000ffe0-0000-1000-8000-00805f9b34fb
+          <div className="text-xs text-muted-foreground bg-background/50 p-3 rounded-xl font-mono space-y-1">
+            <div>Service: 19B10000-E8F2-537E-4F6C-D104768A1214</div>
+            <div>Char: 19B10001-E8F2-537E-4F6C-D104768A1214</div>
           </div>
         </Card>
       </section>
